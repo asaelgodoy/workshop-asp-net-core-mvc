@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SalesWebMvc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +11,9 @@ var connection = builder.Configuration["MySqlConnection:MysqlConnectionString"];
 builder.Services.AddDbContext<SalesWebMvcContext>(options =>
 options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 31))));
 
+
+builder.Services.AddScoped<SeedingService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +24,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+SeedDatabase();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -34,3 +37,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var seedServices = scope.ServiceProvider.GetRequiredService<SeedingService>();
+        seedServices.Seed();
+    }
+}

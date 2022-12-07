@@ -15,6 +15,7 @@ options.UseMySql(connection, new MySqlServerVersion(new Version(8, 0, 31))));
 
 builder.Services.AddScoped<SeedingService>();
 builder.Services.AddScoped<SellerService>();
+builder.Services.AddScoped<DepartmentService>();
 
 
 var app = builder.Build();

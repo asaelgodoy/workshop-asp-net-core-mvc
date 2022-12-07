@@ -27,7 +27,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
+SeedDatabase();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -43,3 +43,11 @@ app.MapControllerRoute(
 app.Run();
 
 
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var seedServices = scope.ServiceProvider.GetRequiredService<SeedingService>();
+        seedServices.Seed();
+    }
+}
